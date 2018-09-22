@@ -2,4 +2,4 @@
 FROM microsoft/aspnet
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-COPY . /
+RUN Write-Host "Build complete."
