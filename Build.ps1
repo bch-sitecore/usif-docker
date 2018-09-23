@@ -20,8 +20,8 @@ $BuildArgs | ForEach-Object { $dockerArgs += $("--build-arg", $_) }
 $dockerArgs += "."
 
 Write-Verbose "docker $($dockerArgs -join ' ')"
-$build = Start-Process docker -ArgumentList $dockerArgs -NoNewWindow -Wait -PassThru
-If ($build.ExitCode -ne 0) {
+& docker $dockerArgs
+If ($LASTEXITCODE -ne 0) {
   Write-Error "Build failed."
 }
 
