@@ -31,8 +31,8 @@ build_script:
         "PSRepositoryLocation=${env:PSRepositoryLocation}"
         "ModuleVersion=$($usif.Version)"
       )
-      .\Build.ps1 -DockerRepository "${env:DockerRepository}/${env:DockerUsername}"" -BuildArgs $buildArgs
+      .\Build.ps1 -DockerRepository "${env:DockerRepository}/${env:DockerUsername}" -BuildArgs $buildArgs
 
 deploy_script:
   - ps: $env:DockerPassword | docker login --username $env:DockerUsername --password-stdin $env:DockerRepository
-  - ps: .\Deploy.ps1 -DockerRepository "${env:DockerRepository}/${env:DockerUsername}""
+  - ps: .\Deploy.ps1 -DockerRepository "${env:DockerRepository}/${env:DockerUsername}"
