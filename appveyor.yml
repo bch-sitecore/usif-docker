@@ -1,0 +1,38 @@
+version: 0.1.{build}
+image: Visual Studio 2017
+
+branches:
+  except:
+    - gh-pages
+
+environment:
+  DockerRepository:
+    secure: O31RyxMbW2kjUIZnmwAlI1VZ2ARwMDjWeolUMCT+nTM= 
+  DockerUsername:
+    secure: b2cKuN3mLck9vm84qOfC9g==
+  DockerPassword:
+    secure: zK3mBk7glxDZuCKBHGINOQ1BRWJiaOUA+3bEWjT1Bk/QPfz/jWVQF6IS/n5KuoVe
+  PSRepositoryName:
+    secure: rNmqtztDt57vkUO+OAPCmg==
+  PSRepositoryLocation:
+    secure: VMUmmeqFeGKU3cgQY6BWJxttrgYE+ulY/N/UrzT54Iz/91LROC/nd4bGCF5cRwmA
+
+install:
+  - ps: .\Install.ps1
+  - ps: |
+      Register-PSRepository $env:PSRepositoryName -SourceLocation $env:PSRepositoryLocation -PublishLocation $env:PSRepositoryLocation -InstallationPolicy Trusted
+      Get-PSRepository
+
+build_script:
+  - ps: |
+      $usif = Find-Module Unattended.SIF -Repository $env:PSRepositoryName
+      $buildArgs = @(
+        "PSRepositoryName=${env:PSRepositoryName}"
+        "PSRepositoryLocation=${env:PSRepositoryLocation}"
+        "ModuleVersion=$($usif.Version)"
+      )
+      .\Build.ps1 -DockerRepository $env:PSRepositoryName -BuildArgs $buildArgs
+
+deploy_script:
+  - ps: $env:DockerPassword | docker login --username $env:DockerUsername --password-stdin $env:DockerRepository
+  - ps: .\Deploy.ps1
