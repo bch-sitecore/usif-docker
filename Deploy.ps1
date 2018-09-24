@@ -2,7 +2,7 @@
 Param(
   [Parameter(Position = 0)]
   [ValidateNotNullOrEmpty()]
-  [string]$DockerRepository = "local/usif-docker"
+  [string]$DockerRepository = "usif-docker"
   ,
   [Parameter(Position = 1)]
   [AllowEmptyCollection()]

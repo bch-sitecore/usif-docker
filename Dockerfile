@@ -4,19 +4,24 @@ ARG BaseImage=microsoft/aspnet
 FROM ${BaseImage}
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-COPY ./temp /temp
-RUN Write-Host "Moving temp to" $env:TEMP ; Move-Item \temp\* -Destination $env:TEMP
+# Update NuGet Package Provider
+RUN Install-PackageProvider -Name "NuGet" -Force
 
-RUN Install-PackageProvider -Name 'NuGet' -Force
-
-ARG ModuleName=Unattended.SIF
-ARG ModuleVersion=0.1
+# Register repository
 ARG PSRepositoryName
 ARG PSRepositoryLocation
+RUN Register-PSRepository $env:PSRepositoryName -SourceLocation $env:PSRepositoryLocation -InstallationPolicy Trusted
 
-RUN Register-PSRepository $env:PSRepositoryName -SourceLocation $env:PSRepositoryLocation -InstallationPolicy Trusted ; `
-    Install-Module $env:ModuleName -Repository $env:PSRepositoryName -RequiredVersion $env:ModuleVersion -SkipPublisherCheck -Force
+# Install USIF
+ARG ModuleName=Unattended.SIF
+ARG ModuleVersion=0.0.1
+RUN Install-Module $env:ModuleName -Repository $env:PSRepositoryName -RequiredVersion $env:ModuleVersion -SkipPublisherCheck -Force
 
-RUN Install-IIS -Verbose ; Install-SQLDeveloper -Verbose
+# Run install tasks
+RUN Install-IIS ; Install-SQLDeveloper ; Install-JavaSE8
+
+# Remove USIF & repository
+RUN Get-InstalledModule $env:ModuleName -AllVersions | Uninstall-Module ; `
+    Unregister-PSRepository $env:PSRepositoryName
 
 ENTRYPOINT ["powershell"]

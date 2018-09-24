@@ -19,20 +19,16 @@ environment:
 
 install:
   - ps: .\Install.ps1
-  - ps: |
-      Register-PSRepository $env:PSRepositoryName -SourceLocation $env:PSRepositoryLocation -PublishLocation $env:PSRepositoryLocation -InstallationPolicy Trusted
-      Get-PSRepository
 
 build_script:
   - ps: |
-      $usif = Find-Module Unattended.SIF -Repository $env:PSRepositoryName
       $buildArgs = @(
         "PSRepositoryName=${env:PSRepositoryName}"
         "PSRepositoryLocation=${env:PSRepositoryLocation}"
-        "ModuleVersion=$($usif.Version)"
       )
       .\Build.ps1 -DockerRepository "${env:DockerRepository}/usif-docker" -BuildArgs $buildArgs
 
 deploy_script:
-  - ps: $env:DockerPassword | docker login --username $env:DockerUsername --password-stdin $env:DockerRepository
-  - ps: .\Deploy.ps1 -DockerRepository "${env:DockerRepository}/usif-docker"
+  - ps: |
+      $env:DockerPassword | docker login --username $env:DockerUsername --password-stdin $env:DockerRepository
+      .\Deploy.ps1 -DockerRepository "${env:DockerRepository}/usif-docker"
