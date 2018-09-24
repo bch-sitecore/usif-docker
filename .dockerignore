@@ -1,8 +1,9 @@
 .git/
 .gitignore
 .gitattributes
-
-Dockerfile
+appveyor.yml
 Build.ps1
+Deploy.ps1
+Dockerfile
 LICENSE
 README.md
