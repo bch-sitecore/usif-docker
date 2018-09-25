@@ -24,8 +24,9 @@ $BuildArgs | ForEach-Object { $dockerArgs += @("--build-arg", $_) }
 $dockerArgs += $Path
 
 Write-Verbose "docker $($dockerArgs -join ' ')"
-$result = Start-Process docker -ArgumentList $dockerArgs -Wait -NoNewWindow -PassThru
-If ($result.ExitCode -ne 0) {
+# AppVeyor apprently hates Start-Process (or doesn't stream stdout while in process)
+& docker $dockerArgs
+If ($LASTEXITCODE -ne 0) {
   Write-Error "Build failed."
 }
 
