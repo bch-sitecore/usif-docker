@@ -17,7 +17,7 @@ ARG ModuleName=Unattended.SIF
 RUN Install-Module $env:ModuleName -Repository $env:PSRepositoryName -SkipPublisherCheck -Force
 
 # Run install tasks
-RUN Install-IIS ; Install-SQLDeveloper ; Install-JavaSE8
+RUN Install-IIS ; Install-SQLDeveloper ; Install-JavaSE8 ; Install-NSSM
 
 # Remove USIF & repository
 RUN Get-InstalledModule $env:ModuleName -AllVersions | Uninstall-Module ; `
