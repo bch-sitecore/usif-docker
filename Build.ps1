@@ -17,7 +17,8 @@ Param(
 )
 $ErrorActionPreference = "Stop"
 
-$dockerArgs = @("build", "--no-cache")
+$dockerArgs = @("build")
+If ($Path -eq ".") { $dockerArgs += "--no-cache" }
 $Tags | ForEach-Object { $dockerArgs += @("--tag", "${DockerRepository}:${_}") }
 $BuildArgs | ForEach-Object { $dockerArgs += @("--build-arg", $_) }
 $dockerArgs += $Path

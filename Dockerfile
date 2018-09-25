@@ -14,8 +14,7 @@ RUN Register-PSRepository $env:PSRepositoryName -SourceLocation $env:PSRepositor
 
 # Install USIF
 ARG ModuleName=Unattended.SIF
-ARG ModuleVersion=0.0.1
-RUN Install-Module $env:ModuleName -Repository $env:PSRepositoryName -RequiredVersion $env:ModuleVersion -SkipPublisherCheck -Force
+RUN Install-Module $env:ModuleName -Repository $env:PSRepositoryName -SkipPublisherCheck -Force
 
 # Run install tasks
 RUN Install-IIS ; Install-SQLDeveloper ; Install-JavaSE8
